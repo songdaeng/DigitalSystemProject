@@ -1,0 +1,44 @@
+a.wide{
+    display:block;
+    margin-bottom: 10px;
+    background-color: red;
+}
+#side-bar{
+    background-color: #1a1a1a;
+    display: left;
+    margin-top: 5px;
+    height: 100%;
+    width: 15%
+    
+}
+#user-image{
+    height: 250px;
+    max-width: 100%;
+    margin-bottom: 20px;
+    margin-left: 40px;
+}
+.circle{
+    border-radius: 50%;
+    
+}
+.center {
+  text-align: center;
+  border: 3px;
+  margin-bottom: 20px;
+}
+.loader {
+  margin-left: 25%;
+  display: none;
+
+}
+.fa-linkedin, .fa-linkedin{
+    margin-left: 60px;
+    max-height: 15%;
+}
+
+#errorTable{
+    color: white;
+}
+#viewTrainingComparison{
+    text-align: left;
+}
