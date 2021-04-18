@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import model.NetworkBP;
 import static model.NeuralNetwork.createExistingNeuralNetwork;
 import static model.TrainingData.getDataFromFile;
@@ -37,6 +38,8 @@ public class trainBPANNContrroller extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String url = request.getContextPath() + "/view/trainBP.jsp";
+                    HttpSession session = request.getSession();
+            session.setAttribute("success", "");
         response.sendRedirect(url);
     }
 
@@ -51,14 +54,16 @@ public class trainBPANNContrroller extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-            String path = "C:/Users/varut/Documents/NetBeansProjects/BPNeuralNetwork/src/java/model/dataset.txt";
+            String path = getServletContext().getRealPath("/WEB-INF/classes/model/dataset.txt");
+            String BPWeightsPath = getServletContext().getRealPath("/WEB-INF/classes/model/weights.txt");
             TrainingData[] data =    getDataFromFile(path);
             double minError = Double.parseDouble(request.getParameter("minError"));
             double learningRate = Double.parseDouble(request.getParameter("learningRate"));
             int numLayers = Integer.parseInt(request.getParameter("layers"));
             int epochWithoutImprovement = Integer.parseInt(request.getParameter("epochWithoutImprovement"));
-            model.NeuralNetwork.createNewNeuralNetwork(path,numLayers, learningRate, epochWithoutImprovement, minError);
-            request.setAttribute("Success", "training completed");
+            model.NeuralNetwork.createNewNeuralNetwork(path,BPWeightsPath, numLayers, learningRate, epochWithoutImprovement, minError);
+            HttpSession session = request.getSession();
+            session.setAttribute("success", "training completed");
             String url = request.getContextPath() + "/view/trainBP.jsp";
             
             response.sendRedirect(url);

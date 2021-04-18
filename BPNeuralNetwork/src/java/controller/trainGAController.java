@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import static model.TrainingData.getDataFromFile;
 import model.TrainingData;
 
@@ -35,6 +36,8 @@ public class trainGAController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String url = request.getContextPath() + "/view/trainGA.jsp";
+        HttpSession session = request.getSession();
+        session.setAttribute("success", "");
         response.sendRedirect(url);
     }
 
@@ -49,7 +52,9 @@ public class trainGAController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-            String path = "C:/Users/varut/Documents/NetBeansProjects/BPNeuralNetwork/src/java/model/dataset.txt";
+            
+            String path = getServletContext().getRealPath("/WEB-INF/classes/model/dataset.txt");
+            String GAWeightsPath = getServletContext().getRealPath("/WEB-INF/classes/model/GAANN/weights.txt");
             TrainingData[] data = getDataFromFile(path);
             double minError = Double.parseDouble(request.getParameter("minError"));
             double mutationRate = Double.parseDouble(request.getParameter("mutationRate"));
@@ -57,8 +62,9 @@ public class trainGAController extends HttpServlet {
             int numLayers = Integer.parseInt(request.getParameter("layers"));
             int epochWithoutImprovement = Integer.parseInt(request.getParameter("epochWithoutImprovement"));
             
-            model.GAANN.NeuralNetwork.createNetwork(path, minError, numLayers, mutationRate, crossoverRate, epochWithoutImprovement);
-            request.setAttribute("success", "training completed");
+            model.GAANN.NeuralNetwork.createNetwork(path,GAWeightsPath,  minError, numLayers, mutationRate, crossoverRate, epochWithoutImprovement);
+            HttpSession session = request.getSession();
+            session.setAttribute("success", "Training completed");
             String url = request.getContextPath() + "/view/trainGA.jsp";
             response.sendRedirect(url);
     }

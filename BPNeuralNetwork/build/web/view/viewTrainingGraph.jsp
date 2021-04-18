@@ -50,8 +50,8 @@
         height: 500
       };
         createGraph('Year', 'BP Training Prediction', 'GA Training Prediction', 'Actual Training Value', input, 'line_top_training', options);
-        createGraph('Year', 'BP Validation Prediction', 'GA Validation Prediction', 'Actual Validation Value', input, 'line_top_validation', options2);
-        createGraph('Year', 'BP Testing Prediction', 'GA Testing Prediction', 'Actual Testing value', input, 'line_top_testing', options3);
+        createGraph('Year', 'BP Validation Prediction', 'GA Validation Prediction', 'Actual Validation Value', input2, 'line_top_validation', options2);
+        createGraph('Year', 'BP Testing Prediction', 'GA Testing Prediction', 'Actual Testing value', input3, 'line_top_testing', options3);
 
       
       }

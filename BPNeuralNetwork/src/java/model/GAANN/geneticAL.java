@@ -191,7 +191,7 @@ public class geneticAL {
     * pick at random if the gene will mutation and pick the mutation magnitude
     * at random
     */
-    static int MUTATIONRATE = 970; 
+    static double mutationRate = 970; 
    public static void mutation(Individual offspring, TrainingData[] data)
    {
        //uncapped mutation can go over the init genes
@@ -206,7 +206,7 @@ public class geneticAL {
            randNum = rand.nextInt(1000);
            //mutation size
            alter = rand.nextDouble()/ 10;
-           if(randNum > MUTATIONRATE)
+           if(randNum <= mutationRate)
            {
                //50 50 for increasing or decreasing the gene
               if(rand.nextInt(2) % 2 == 0)
@@ -235,10 +235,10 @@ public class geneticAL {
     {
         
         geneNum = numOfGene;
-        MUTATIONRATE =  (int) mutation * 1000;
+        mutationRate =  mutation * 1000;
         double fitness = 10000; 
         double LowestError = 100000;
-        int CROSSOVER = (int) crossoverRate * 1000;
+        double crossover = crossoverRate * 1000;
         Random rand = new Random();
         int epochWithoutImprovement = 0;
         int epoch = 0;
@@ -263,7 +263,7 @@ public class geneticAL {
             //crossover for the whole generation
             for (int j = 0; j < SIZE ; j+=2) {
                 double randNum = rand.nextInt(1000);
-                if(randNum >= CROSSOVER){
+                if(randNum <= crossover){
                     //System.out.println("crossover");
                     crossover(offspring[j], offspring[j + 1], data);
                 }
@@ -292,7 +292,7 @@ public class geneticAL {
             if(epoch > 101 || epoch == 0)
             {
                 //adding training curve
-                System.out.println("error " + fitness);
+
                 trainingError.add(fitness);
                 double[] weighting = bestOffSpring.getGene();
                 NeuralNetwork.genesToWeights(network, weighting);

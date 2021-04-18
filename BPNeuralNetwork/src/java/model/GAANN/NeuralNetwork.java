@@ -103,7 +103,7 @@ public class NeuralNetwork {
      * return graph of the performance
      */
 
-    public static void createNetwork(String dataPath, double minError, int numOfLayer, double mutationRate
+    public static void createNetwork(String dataPath,String weightsPath, double minError, int numOfLayer, double mutationRate
         , double crossoverRate, int epochWithoutImprovement) {
         
         TrainingData[] data =    getDataFromFile(dataPath);
@@ -137,10 +137,10 @@ public class NeuralNetwork {
         Individual bestIndividual = GeneticAI(geneNum, trainingData, validationData, minError, network, mutationRate, crossoverRate, epochWithoutImprovement);        
         
         double[] weighting = bestIndividual.getGene(); 
-        String path = "C:/Users/varut/Documents/NetBeansProjects/BPNeuralNetwork/src/java/model/GAANN/weights.txt";
+
         
         genesToWeights(network, weighting);  
-        writeWeightsToFile(network, path);
+        writeWeightsToFile(network, weightsPath);
         
     }
     
@@ -285,7 +285,7 @@ public class NeuralNetwork {
         //return the sum tot the fitness function
         return error;
     }
-    public static NetworkGA createExistingNeuralNetwork(String dataPath) {
+    public static NetworkGA createExistingNeuralNetwork(String dataPath, String weightsPath) {
 
         TrainingData[] data =  getDataFromFile(dataPath);
         //set nodes length
@@ -298,11 +298,9 @@ public class NeuralNetwork {
         outNode = 1;
         //how much data is use for training
         normalisedAllData(data);
-        String path = "C:/Users/varut/Documents/NetBeansProjects/BPNeuralNetwork/src/java/model/GAANN/weights.txt";
-       NetworkGA network = getWeightsFromFile(path);
 
+        NetworkGA network = getWeightsFromFile(weightsPath);
 
-  
         double[] dataPrediction = forward(data, network);
  
         for (int i = 0; i < dataPrediction.length; i++) {         
@@ -314,7 +312,7 @@ public class NeuralNetwork {
         return network;
     }
     
-    public static NetworkGA createExistingNeuralNetwork(TrainingData[] data) {
+    public static NetworkGA createExistingNeuralNetwork(TrainingData[] data, String weightsPath) {
 
  
         //set nodes length
@@ -326,12 +324,8 @@ public class NeuralNetwork {
         LAYERNUM = 4;
         outNode = 1;
         normalisedAllData(data);
-        //how much data is use for training
-        String path = "C:/Users/varut/Documents/NetBeansProjects/BPNeuralNetwork/src/java/model/GAANN/weights.txt";
-       NetworkGA network = getWeightsFromFile(path);
+        NetworkGA network = getWeightsFromFile(weightsPath);
 
-
-  
         double[] dataPrediction = forward(data, network);
  
         for (int i = 0; i < dataPrediction.length; i++) {         
@@ -343,7 +337,7 @@ public class NeuralNetwork {
         return network;
     }
     
-    public static NetworkGA getTrainingValidationErrorGA(String dataPath) {
+    public static NetworkGA getTrainingValidationErrorGA(String dataPath, String weightsPath) {
 
         TrainingData[] data =  getDataFromFile(dataPath);
         //set nodes length
@@ -352,10 +346,7 @@ public class NeuralNetwork {
         hiddenNode = inputNode;
         LAYERNUM = 4;
         outNode = 1;
-        //how much data is use for training
-        String path = "C:/Users/varut/Documents/NetBeansProjects/BPNeuralNetwork/src/java/model/GAANN/weights.txt";
-       NetworkGA network = getWeightsFromFile(path);
-       
+        NetworkGA network = getWeightsFromFile(weightsPath);
         return network;
     }
     
@@ -491,7 +482,7 @@ public class NeuralNetwork {
     }  
     
     
-     public static double predictGA(double[] features, TrainingData data) {
+     public static double predictGA(double[] features, TrainingData data, String weightsPath) {
         
 
         double[] min = data.getMin();
@@ -513,12 +504,8 @@ public class NeuralNetwork {
         hiddenNode = inputNode;
         LAYERNUM = 4;
         outNode = 1;
-        //how much data is use for training
-        String path = "C:/Users/varut/Documents/NetBeansProjects/BPNeuralNetwork/src/java/model/GAANN/weights.txt";
-       NetworkGA network = getWeightsFromFile(path);
 
-
-  
+        NetworkGA network = getWeightsFromFile(weightsPath);
         double dataPrediction = forward(newData, network);
  
         System.out.println(dataPrediction);

@@ -29,21 +29,23 @@ public class predictionController extends HttpServlet {
 
     private void getPrediction(HttpServletRequest request, HttpServletResponse response)
     {
-            String path = "C:/Users/varut/Documents/NetBeansProjects/BPNeuralNetwork/src/java/model/dataset.txt";
+            String path = getServletContext().getRealPath("/WEB-INF/classes/model/dataset.txt");
+            String BPWeightsPath = getServletContext().getRealPath("/WEB-INF/classes/model/weights.txt");
+            String GAWeightsPath = getServletContext().getRealPath("/WEB-INF/classes/model/GAANN/weights.txt");
              TrainingData[] data =    getDataFromFile(path);
-            NetworkBP networkBP = createExistingNeuralNetwork(path);
-            NetworkGA networkGA = model.GAANN.NeuralNetwork.createExistingNeuralNetwork(path);
+            NetworkBP networkBP = createExistingNeuralNetwork(path, BPWeightsPath);
+            NetworkGA networkGA = model.GAANN.NeuralNetwork.createExistingNeuralNetwork(path, GAWeightsPath);
             double[] prediction = networkBP.getPrediction();
             double[] GAPrediction = networkGA.getPrediction();
-            String path2 = "C:/Users/varut/Documents/NetBeansProjects/BPNeuralNetwork/src/java/model/nextMonthData.txt";
+            String path2 = getServletContext().getRealPath("/WEB-INF/classes/model/nextMonthData.txt");
              TrainingData[] data2 =  getDataFromFile(path2);
              String nextMonthValue = Double.toString(data2[0].getExpectValue());
              double[] features = data2[0].getData();
              //requiredd as data get modify for some reason
-            double nextMonthPredictionGA= predictGA(features, data[0]);
+            double nextMonthPredictionGA = predictGA(features, data[0], GAWeightsPath);
             data2 =  getDataFromFile(path2);
              double[] features2 = data2[0].getData();
-            double nextMonthPredictionBP = predict(features2, data[0]);
+            double nextMonthPredictionBP = predict(features2, data[0], BPWeightsPath);
 
             String newText = "[";
             String[] date = new String[data.length];
@@ -119,21 +121,23 @@ public class predictionController extends HttpServlet {
             request.setAttribute("predictionError", "Input field is empty");
         }
         else{
-             String path = "C:/Users/varut/Documents/NetBeansProjects/BPNeuralNetwork/src/java/model/dataset.txt";
-             TrainingData[] data =    getDataFromFile(path);
-             int featureSet = data[0].getData().length;
-             String[] newData = marketData.split(",");
+            String path = "C:/Users/varut/Documents/NetBeansProjects/BPNeuralNetwork/src/java/model/dataset.txt";
+            String BPWeightsPath = getServletContext().getRealPath("/WEB-INF/classes/model/weights.txt");
+            String GAWeightsPath = getServletContext().getRealPath("/WEB-INF/classes/model/GAANN/weights.txt");
+            TrainingData[] data =    getDataFromFile(path);
+            int featureSet = data[0].getData().length;
+            String[] newData = marketData.split(",");
             if(featureSet == newData.length)
             {
                 double[] doubleValues = Arrays.stream(newData)
                         .mapToDouble(Double::parseDouble)
                         .toArray();
-                double predictionBP = predict(doubleValues, data[0]);
+                double predictionBP = predict(doubleValues, data[0],BPWeightsPath );
                 //data gets messed up by javaEE as it clone memory. 
                 double[] newFeatureSet = Arrays.stream(newData)
                         .mapToDouble(Double::parseDouble)
                         .toArray();
-                double predictionGA = predictGA(newFeatureSet,data[0]);
+                double predictionGA = predictGA(newFeatureSet,data[0], GAWeightsPath);
                 request.setAttribute("BPPrediction", predictionBP);
                 request.setAttribute("GAPrediction", predictionGA);
 

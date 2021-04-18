@@ -404,7 +404,7 @@ public class NeuralNetwork {
         network.setOuterBias(outerBias);
  
     }
-    public static void createNewNeuralNetwork(String dataPath, int layer, double LearningRate, int epochwithoutImprovement, double minError) {
+    public static void createNewNeuralNetwork(String dataPath, String weightsPath,  int layer, double LearningRate, int epochwithoutImprovement, double minError) {
         
         //java clone the memory as cahnges to children changes the parent object
         //that why need to get file at model level
@@ -426,19 +426,17 @@ public class NeuralNetwork {
         int trainingLength = (int) ((data.length * trainingRatio) - validationLength);
         int testingLength = data.length - (trainingLength + validationLength);
 
-        TrainingData[] trainingData = new TrainingData[trainingLength]; ;
+        TrainingData[] trainingData = new TrainingData[trainingLength];
         TrainingData[] validationData = new TrainingData[validationLength]; 
-        TrainingData[] testingData = new TrainingData[testingLength];;
+        TrainingData[] testingData = new TrainingData[testingLength];
         dataSplitting(data, trainingData, testingData, validationData, trainingRatio);
     
 
       NetworkBP network = new NetworkBP(inputNode, hiddenNode, outNode, LAYERNUM);
-
-        double[] dataPrediction =  new double[data.length];
         
         train(trainingData,validationData, network);
-        String path = "C:/Users/varut/Documents/NetBeansProjects/BPNeuralNetwork/src/java/model/weights.txt";
-        writeToFile(network, path);
+
+        writeToFile(network, weightsPath);
     }
     
     /**
@@ -475,6 +473,7 @@ public class NeuralNetwork {
             else if(i % 10 > splitRatio && counter3 < testingLength){
                 testingData[counter3] = 
                         new TrainingData(data[i].getData(), data[i].getExpectValue());
+                testingData[counter3].setDate(data[i].getDate());
                 counter3++;
             }
             else if(counter1 < trainingLength){
@@ -493,7 +492,7 @@ public class NeuralNetwork {
         }
     }
     
-    public static NetworkBP createExistingNeuralNetwork(String dataPath) {
+    public static NetworkBP createExistingNeuralNetwork(String dataPath, String weightsPath) {
         
         TrainingData[] data = 
                  getDataFromFile(dataPath);
@@ -507,8 +506,7 @@ public class NeuralNetwork {
         double[] max = data[0].getMax();
         double predictionMax = max[max.length -1];
         normalisedAllData(data);
-        String path = "C:/Users/varut/Documents/NetBeansProjects/BPNeuralNetwork/src/java/model/weights.txt";
-       NetworkBP network = getWeightsFromFile(path);
+       NetworkBP network = getWeightsFromFile(weightsPath);
        
        
         
@@ -527,7 +525,7 @@ public class NeuralNetwork {
         return network;
     }
     
-        public static NetworkBP createExistingNeuralNetwork(TrainingData[] data) {
+        public static NetworkBP createExistingNeuralNetwork(TrainingData[] data, String weightsPath) {
         
          //set nodes length
         inputNode = data[0].getData().length;
@@ -539,12 +537,8 @@ public class NeuralNetwork {
         double[] max = data[0].getMax();
         double predictionMax = max[max.length -1];
         normalisedAllData(data);
-        String path = "C:/Users/varut/Documents/NetBeansProjects/BPNeuralNetwork/src/java/model/weights.txt";
-       NetworkBP network = getWeightsFromFile(path);
+        NetworkBP network = getWeightsFromFile(weightsPath);
        
-       
-        
-        
         double[] dataPrediction = forward(data, network);
         network.setNetworkError((network.getNetworkError() / data.length) * predictionMax);
         network.setNetworkErrorSquared((network.getNetworkErrorSquared()/ data.length )* predictionMax);
@@ -559,7 +553,7 @@ public class NeuralNetwork {
         return network;
     }
     
-    public static NetworkBP getTrainingValidationError(String dataPath) {
+    public static NetworkBP getTrainingValidationError(String dataPath, String weightsPath) {
         
         TrainingData[] data = 
                  getDataFromFile(dataPath);
@@ -570,13 +564,13 @@ public class NeuralNetwork {
         outNode = 1;
         //how much data is use for training
 
-        String path = "C:/Users/varut/Documents/NetBeansProjects/BPNeuralNetwork/src/java/model/weights.txt";
-       NetworkBP network = getWeightsFromFile(path);
+
+       NetworkBP network = getWeightsFromFile(weightsPath);
        
         return network;
     }
     
-    public static double predict(double[] features, TrainingData data) {
+    public static double predict(double[] features, TrainingData data, String weightsPath) {
         
 
         double[] min = data.getMin();
@@ -596,8 +590,7 @@ public class NeuralNetwork {
        
         TrainingData newData = new TrainingData(data1, 0);
 
-        String path = "C:/Users/varut/Documents/NetBeansProjects/BPNeuralNetwork/src/java/model/weights.txt";
-       NetworkBP network = getWeightsFromFile(path);
+       NetworkBP network = getWeightsFromFile(weightsPath);
        
         double dataPrediction = forward(newData, network);
         dataPrediction = denormaliseData(dataPrediction ,min[min.length-1], max[max.length - 1]) ;

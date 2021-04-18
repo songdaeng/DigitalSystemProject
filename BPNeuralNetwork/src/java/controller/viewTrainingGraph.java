@@ -29,6 +29,8 @@ public class viewTrainingGraph extends HttpServlet {
      private void getPrediction(HttpServletRequest request, HttpServletResponse response,
              TrainingData[] data, String graphName, String MSEBP, String MSEGA, String MADBP, String MADGA)
     {
+            String BPWeightsPath = getServletContext().getRealPath("/WEB-INF/classes/model/weights.txt");
+            String GAWeightsPath = getServletContext().getRealPath("/WEB-INF/classes/model/GAANN/weights.txt");
             ArrayList<String> date = new ArrayList<>();
             String[] expectedValue = new String[data.length];
             int length = data[0].getData().length;
@@ -44,9 +46,9 @@ public class viewTrainingGraph extends HttpServlet {
                 }
             }
             
-            NetworkBP networkBP = createExistingNeuralNetwork(data);
+            NetworkBP networkBP = createExistingNeuralNetwork(data, BPWeightsPath);
             dataReconstruction(data, expectedValue, savedData);
-            NetworkGA networkGA = model.GAANN.NeuralNetwork.createExistingNeuralNetwork(data);
+            NetworkGA networkGA = model.GAANN.NeuralNetwork.createExistingNeuralNetwork(data, GAWeightsPath);
 
             
             double[] prediction = networkBP.getPrediction();
@@ -99,7 +101,7 @@ public class viewTrainingGraph extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         double trainingRatio = 0.7;
-        String path = "C:/Users/varut/Documents/NetBeansProjects/BPNeuralNetwork/src/java/model/dataset.txt";
+        String path = getServletContext().getRealPath("/WEB-INF/classes/model/dataset.txt");
         TrainingData[] data =    getDataFromFile(path);
         double[] min = data[0].getMin();
         double[] max = data[0].getMax();
