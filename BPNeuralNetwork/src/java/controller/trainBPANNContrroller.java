@@ -56,14 +56,14 @@ public class trainBPANNContrroller extends HttpServlet {
             throws ServletException, IOException {
             String path = getServletContext().getRealPath("/WEB-INF/classes/model/dataset.txt");
             String BPWeightsPath = getServletContext().getRealPath("/WEB-INF/classes/model/weights.txt");
-            TrainingData[] data =    getDataFromFile(path);
+            TrainingData[] data = getDataFromFile(path);
             double minError = Double.parseDouble(request.getParameter("minError"));
             double learningRate = Double.parseDouble(request.getParameter("learningRate"));
             int numLayers = Integer.parseInt(request.getParameter("layers"));
             int epochWithoutImprovement = Integer.parseInt(request.getParameter("epochWithoutImprovement"));
             model.NeuralNetwork.createNewNeuralNetwork(path,BPWeightsPath, numLayers, learningRate, epochWithoutImprovement, minError);
             HttpSession session = request.getSession();
-            session.setAttribute("success", "training completed");
+            session.setAttribute("success", "Training completed");
             String url = request.getContextPath() + "/view/trainBP.jsp";
             
             response.sendRedirect(url);

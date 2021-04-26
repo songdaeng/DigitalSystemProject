@@ -79,7 +79,7 @@
                     </div>
                   </div>
                    <div class="input-field col s6">
-                    <button class="waves-effect waves-light btn" onclick="document.getElementById('loader').style.display = 'block';" name="option" value="submit"> Submit </button>
+                    <button class="waves-effect waves-light btn" onclick="document.getElementById('loader').style.display = 'block'" name="option" value="submit"> Submit </button>
                 </div>
                 <div class="row">
                     <img class="loader" src="loader.gif" alt="loading..." />

@@ -40,12 +40,12 @@ public class viewTrainingErrorController extends HttpServlet {
             String BPText = "[";
             String GAText = "[";
             int lowestLength = BPTrainingError.size() < GATrainingError.size() ? BPTrainingError.size() : GATrainingError.size() ;
-            int length = lowestLength < 20 ? lowestLength : 20;
+            int length = lowestLength < 50 ? lowestLength : 50;
             for(int i = 0; i < length; i++)
             {
                 BPText += "[ " + ((i * 100) + 1)  + " , " + BPTrainingError.get(i) + ", " + BPValidationError.get(i) + " ]";
                 GAText += "[ " + ((i * 100) + 1)  + " , " + GATrainingError.get(i) + ", " + GAValidationError.get(i) + " ]";
-                if(i != 19)
+                if(i != (length - 1))
                 {
                     BPText += ", ";
                     GAText += ", ";

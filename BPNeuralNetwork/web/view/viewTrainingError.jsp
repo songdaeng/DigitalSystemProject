@@ -22,17 +22,17 @@
          
         var data = new google.visualization.DataTable();
         data.addColumn('number', 'Epoch');
-        data.addColumn('number', 'Training Error');
+        data.addColumn('number', 'Training Error ||||');
         data.addColumn('number', 'Validation Error');
     
         data.addRows(input);
 
         var options = {
         chart: {
-          title: 'BP First 2000 Epoch ',
-          subtitle: 'Normalised Training and Validation Error'
+          title: 'BP First 5000 Epoch ',
+          subtitle: 'Normalised Training and Validation Error '
         },
-        width: 500,
+        width: "50%",
         height: 500,
         axes: {
           x: {
@@ -43,17 +43,17 @@
       
       var data2 = new google.visualization.DataTable();
         data2.addColumn('number', 'Epoch');
-        data2.addColumn('number', 'Training Error');
+        data2.addColumn('number', 'Training Error  |||');
         data2.addColumn('number', 'Validation Error');
     
         data2.addRows(input2);
 
         var options2 = {
         chart: {
-          title: 'GA First 2000 Epoch ',
+          title: 'GA First 5000 Epoch ',
           subtitle: 'Normalised Training and Validation Error'
         },
-        width: 500,
+        width: 600,
         height: 500,
       };
 
