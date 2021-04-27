@@ -99,19 +99,20 @@ public class TrainingData {
     }
      
     
-         
+    //function for normalised pass in the value and range  
     public static double normaliseData(double x, double min, double max) {
 
      return (x -  min) / (max - min);
 
     }
-    
+    //fuction for denormalise, actual unnormalise technically
+    //pass in value and range
     public static double denormaliseData(double x, double min, double max) {
 
      return (x * (max - min) + min);
 
     }
-    
+    //normalised all pass in data with range in index 0 of teh class
     public static void normalisedAllData(TrainingData[] data)
     {
         double[] min = data[0].getMin();
@@ -137,7 +138,8 @@ public class TrainingData {
      */
     public static TrainingData[] getDataFromFile(String path)
     {
-        TrainingData[] data = new TrainingData[10000];
+        //support upt a 100000 records 
+        TrainingData[] data = new TrainingData[100000];
         int counter = 0;
         try  {  
             //setting up the file reader
@@ -173,12 +175,14 @@ public class TrainingData {
                 for (int i = 0; i < stringLength - 1; i++) {
                     value[i] = Double.parseDouble(rawData[i]);
                     if(counter == 0){
+                        //set the first value of the min and max
                         max[i] = value[i];
                         min[i] = value[i];
                         max[stringLength - 1] = exValue;
                         min[stringLength - 1] = exValue;
                     }
                     else{
+                        //see if value iss a max or min
                         if(value[i] > max[i])
                         {
                             max[i] = value[i];
@@ -189,7 +193,7 @@ public class TrainingData {
                         }
                     }
                 }
-                
+                //update prediction value
                 if(exValue > max[stringLength - 1])
                 {
                     max[stringLength - 1] = exValue;
@@ -201,7 +205,7 @@ public class TrainingData {
   
                 //assigningg to target value to exValue
                 
-
+                //transfer data in a class
                 data[counter] = new TrainingData(
                         value,
                         exValue);
@@ -209,8 +213,9 @@ public class TrainingData {
                 counter++;
 
             }  
-
-            fr.close();    
+            
+            fr.close();   
+            //upscale the min and max
             for (int i = 0; i < min.length; i++) {
                 max[i] = max[i] * 2;
                 min[i] = min[i] / 2 == 0?  min[i] / 2 : min[i];

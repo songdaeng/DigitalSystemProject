@@ -27,7 +27,7 @@ public class CalculationLibrary {
     {
         return (0.5 * Math.pow(target - output, 2));
     }
-    
+    //function for getting aboslute error
     public static double absoluteError(double output, double target)
     {
         return Math.abs(target - output);

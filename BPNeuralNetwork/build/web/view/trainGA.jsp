@@ -1,13 +1,13 @@
 
 <html>
   <head>
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/UI.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/view/style.css">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
+ 
   </head>
 <body>
 
@@ -51,41 +51,46 @@
             </div>
 
             <div class="row">
-                <form action="${pageContext.request.contextPath}/trainGA" method="POST">
+                <form name="trainGA" action="${pageContext.request.contextPath}/trainGA" method="POST">
                 <div class="row">
                     <div class="input-field col s6">
-                      <input id="minError" name="minError" type="number" min="0.0001" max="1" step="0.0001" required>
+                      <input id="minError" value="${minError}" name="minError" type="number" step="0.0001">
                       <label for="minError">Enter the Minimum normalised Desired Error</label>
+                      <span class="helper-text">${minErrorError}</span>
                     </div>
                     <div class="input-field col s6">
-                      <input name="mutationRate" id="mutationRate" type="number"  step="0.001" min="0.001" max="1" required>
+                      <input name="mutationRate" value="${mutationRate}" id="mutationRate" type="number"  step="0.001" >
                       <label for="mutationRate">Mutation Rate</label>
+                      <span class="helper-text">${mutationRateError}</span>
                     </div>
                   </div>
                 <div class="row">
                     <div class="input-field col s6">
-                      <input id="layers" name="layers" type="number" min="3" max="100" required>
+                      <input id="layers" value="${layers}" name="layers" type="number" step="1" >
                       <label for="layers">Enter Number of Layer</label>
+                      <span class="helper-text">${layersError}</span>
                     </div>
                     <div class="input-field col s6">
-                      <input name="crossoverRate" id="crossoverRate" type="number" step="0.001" min="0.001" max="1" required>
+                      <input name="crossoverRate" value="${crossoverRate}" id="crossoverRate" type="number" step="0.001" >
                       <label for="crossoverRate">Enter Crossover Rate </label>
+                      <span class="helper-text">${crossoverRateError}</span>
                     </div>
                   </div>
                     <div class="row">
                     <div class="input-field col s6">
-                      <input name="epochWithoutImprovement" id="epochWithoutImprovement" type="number" required>
+                        <input  name="epochWithoutImprovement" value="${epochWithoutImprovement}" id="epochWithoutImprovement" type="number" step="1" >
                       <label for="epochWithoutImprovement">Enter the maximum number of generation Without Improvement </label>
+                      <span class="helper-text">${epochWithoutImprovementError}</span>
                     </div>
                   </div>
                    <div class="input-field col s6">
                     <button class="waves-effect waves-light btn" onclick="document.getElementById('loader').style.display = 'block'" name="option" value="submit"> Submit </button>
                 </div>
                 <div class="row">
-                    <img class="loader" src="loader.gif" alt="loading..." />
+                    <img class="loader" id="loader" src="loader.gif" alt="Training..." />
                 </div>
           </form>
-          <p>${success}</p>
+          <h5>${success}</h5>
         </div>    
         
       </div>

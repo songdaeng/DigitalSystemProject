@@ -55,8 +55,8 @@ public class NeuralNetwork {
                 }
                 else if(content.matches("layers"))
                 {
-                    int layer = Integer.parseInt(line);
-                    network = new NetworkBP(inputNode, hiddenNode, outNode, layer);
+                    LAYERNUM = Integer.parseInt(line);
+                    network = new NetworkBP(inputNode, hiddenNode, outNode, LAYERNUM);
                     hiddenWeights = new double[LAYERNUM - 2][hiddenNode][inputNode];
                     hiddenBias =  new double[LAYERNUM - 2][hiddenNode]; 
                 }
@@ -130,7 +130,7 @@ public class NeuralNetwork {
         //catching exception
         catch(IOException e)  
         {  
-            System.out.println("");
+        
         }  
         //reconstructing the data so it does not expty array
 
@@ -272,7 +272,6 @@ public class NeuralNetwork {
                     LowestError = 0;
                 }
                 epoch = 1;
-                System.out.println(error);
             }
             epoch++;
             epochWithoutImprovement++;
@@ -346,7 +345,6 @@ public class NeuralNetwork {
             
             derivativeOut = predictionDiff[j] * sigmoidDerivative( outActivation[j]);
             outNodeError[j] = LEARNRATE * derivativeOut;
-            //System.out.println("out activate " + ( predictionDiff[j] * sigmoidDerivative( outActivation[j])));
         }
         
         double[][] hActivation = network.gethActivation();
@@ -358,9 +356,7 @@ public class NeuralNetwork {
             
             for(int hid = 0; hid < hiddenNode; hid++)
             {
-                //System.out.println("before:" + outWeights[out][hid]);
                 outWeights[out][hid] -= outNodeError[out] * hActivation[0][hid];
-                //System.out.println("after:" + outWeights[out][hid]);
             }
             //setting new outweights
             
@@ -379,7 +375,7 @@ public class NeuralNetwork {
 
                     //updating the weights adding current weights to prediction different
                     //* input value coming throught the node * learning rate and SD
-                    //System.out.println(hWeights[hid][input]);
+
                     if(layer == 0){
                         hWeights[layer][hid][input] -= LEARNRATE * inputs[input] * derivativeOut *  sigmoidDerivative(hActivation[layer][hid]);
                     }
@@ -654,9 +650,9 @@ public class NeuralNetwork {
           FileWriter myWriter = new FileWriter(path);
           myWriter.write(weights);
           myWriter.close();
-          System.out.println("Successfully wrote to the file.");
+      
         } catch (IOException e) {
-          System.out.println("An error occurred.");
+            
         }
       }
 }

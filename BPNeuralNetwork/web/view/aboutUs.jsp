@@ -1,7 +1,7 @@
 
 <html>
   <head>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/UI.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/view/style.css">
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
       <!-- Compiled and minified CSS -->
@@ -12,8 +12,7 @@
   
   </head>
 <body>
-
-    <div class="row">
+<div class="row">
 
       <div id="side-bar" class="col s12 m4 l3"> <!-- Note that "m4 l3" was added -->
         <!-- Grey navigation panel
@@ -32,35 +31,25 @@
             <li><a class="sidenav-close" href="#!">Clicking this will close Sidenav</a></li>
         </ul>
         <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>-->
-      <div class="col s12 m8 l9"> <!-- Note that "m8 l9" was added -->
-        <!-- Teal page content
-        
-              This content will be:
-          9-columns-wide on large screens,
-          8-columns-wide on medium screens,
-          12-columns-wide on small screens  -->
+      <div class="col s12 m8 l9 " id="backgroundImage"> <!-- Note that "m8 l9" was added -->
+
         
         <div class="row">
             <div class="card blue-grey darken-1 center">
               <div class="card-content white-text">
-                <span class="card-title">About Us </span>
-                <p>This is the prediction from two models BP Neural Network and GA Hybird System.</p>
+                  <h2><span class="card-title">ABOUT US </span></h2>
+                <p>Thank you very much for viewing my project</p>
               </div>
             </div>
         </div>
-        <div class="row">
-         <div id="line_top_x"></div>
-        </div>
-      
-        <div class="row">
+
+  
+        <div class="row" >
             <div class="card blue-grey darken-1">
-              <div class="card-content white-text">
-                <span class="card-title center">Mean Squared Error  and Mean Absolute Deviation Error </span>
-            
-              </div>
+
             </div>
         </div>    
-        
+
       </div>
 
     </div>

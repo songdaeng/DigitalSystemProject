@@ -40,6 +40,7 @@ public class viewTrainingErrorController extends HttpServlet {
             String BPText = "[";
             String GAText = "[";
             int lowestLength = BPTrainingError.size() < GATrainingError.size() ? BPTrainingError.size() : GATrainingError.size() ;
+            //get first 5000 epochs or whichh everr is the lowest training error length
             int length = lowestLength < 50 ? lowestLength : 50;
             for(int i = 0; i < length; i++)
             {

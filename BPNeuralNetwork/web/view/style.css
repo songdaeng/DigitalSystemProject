@@ -11,11 +11,28 @@ a.wide{
     width: 15%
     
 }
+#backgroundImage{
+    margin-top: 5px;
+    min-height: 100%;
+    background-color: red;
+    background-image: url(./AIbackground.jpg)
+}
+#trainBPButton{
+    max-height: 250px;
+    max-width: 250px;
+    margin-left: 25%;
+    
+}
+#trainGAButton{
+    max-height: 250px;
+    max-width: 250px;
+    left: 50%
+}
 #user-image{
     height: 250px;
-    max-width: 100%;
+    width: 100%;
     margin-bottom: 20px;
-    margin-left: 40px;
+
 }
 .circle{
     border-radius: 50%;
@@ -23,7 +40,7 @@ a.wide{
 }
 .center {
   text-align: center;
-  border: 3px;
+  border: 1000px;
   margin-bottom: 20px;
 }
 .loader {

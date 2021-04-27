@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import static model.TrainingData.getDataFromFile;
 import model.TrainingData;
-
+import utils.ValidationUtils;
 /**
  *
  * @author varut
@@ -37,7 +37,7 @@ public class trainGAController extends HttpServlet {
             throws ServletException, IOException {
         String url = request.getContextPath() + "/view/trainGA.jsp";
         HttpSession session = request.getSession();
-        session.setAttribute("success", "");
+        session.invalidate();
         response.sendRedirect(url);
     }
 
@@ -52,22 +52,43 @@ public class trainGAController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-            
+            //get paths
+             HttpSession session = request.getSession();
+             session.invalidate();
             String path = getServletContext().getRealPath("/WEB-INF/classes/model/dataset.txt");
             String GAWeightsPath = getServletContext().getRealPath("/WEB-INF/classes/model/GAANN/weights.txt");
             TrainingData[] data = getDataFromFile(path);
-            double minError = Double.parseDouble(request.getParameter("minError"));
-            double mutationRate = Double.parseDouble(request.getParameter("mutationRate"));
-            double crossoverRate = Double.parseDouble(request.getParameter("crossoverRate"));
-            int numLayers = Integer.parseInt(request.getParameter("layers"));
-            int epochWithoutImprovement = Integer.parseInt(request.getParameter("epochWithoutImprovement"));
-            
-            model.GAANN.NeuralNetwork.createNetwork(path,GAWeightsPath,  minError, numLayers, mutationRate, crossoverRate, epochWithoutImprovement);
-            HttpSession session = request.getSession();
-            session.setAttribute("success", "Training completed");
+            //get parameter
+            //checking if there are empty string
+            ValidationUtils validation = new ValidationUtils();
+            boolean emptyME = validation.emptyString("minError", request);
+            boolean emptyMR = validation.emptyString("mutationRate", request);
+            boolean emptyCR = validation.emptyString("crossoverRate", request);
+            boolean emptyLayer =  validation.emptyString("layers", request);
+            boolean emptyEWI = validation.emptyString("epochWithoutImprovement", request);
+            if(emptyME && emptyMR && emptyCR && emptyLayer && emptyEWI){  
+                boolean validME = validation.isDoubleAndWithinRange("minError", 0.0001, 1.0, request);
+                boolean validMR = validation.isDoubleAndWithinRange("mutationRate",0.001, 1.0, request);
+                boolean validCR = validation.isDoubleAndWithinRange("crossoverRate", 0.001, 1.0, request);
+                boolean validLayer =  validation.isIntAndWithinRange("layers",3, 100, request);
+                boolean validEWI = validation.isIntAndWithinRange("epochWithoutImprovement",1, 100000, request);
+                if(validME && validMR && validCR && validLayer && validEWI){  
+
+                    double minError = Double.parseDouble(request.getParameter("minError"));
+                    double mutationRate = Double.parseDouble(request.getParameter("mutationRate"));
+                    double crossoverRate = Double.parseDouble(request.getParameter("crossoverRate"));
+                    int numLayers = Integer.parseInt(request.getParameter("layers"));
+                    int epochWithoutImprovement = Integer.parseInt(request.getParameter("epochWithoutImprovement"));
+                    model.GAANN.NeuralNetwork.createNetwork(path,GAWeightsPath,  minError, numLayers, mutationRate, crossoverRate, epochWithoutImprovement);
+                    session = request.getSession(true);
+                    session.setAttribute("success", "Training completed");
+                }
+            }
+
             String url = request.getContextPath() + "/view/trainGA.jsp";
             response.sendRedirect(url);
     }
-
+    
+    
 
 }

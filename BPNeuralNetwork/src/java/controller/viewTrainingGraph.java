@@ -54,7 +54,7 @@ public class viewTrainingGraph extends HttpServlet {
             double[] prediction = networkBP.getPrediction();
             double[] GAPrediction = networkGA.getPrediction();
             String newText = "[";
-
+            //constrcuting data for teh graph
             for(int i = 0; i < prediction.length; i++)
             {
                 newText += "[ \' " + date.get(i) + "\' , " + prediction[i] + ", " + GAPrediction[i] + " , " + expectedValue[i] + " ]";
@@ -66,6 +66,7 @@ public class viewTrainingGraph extends HttpServlet {
                     newText += " ]";
                 }
             }
+            //set attribute to be send to jsp
             request.setAttribute(graphName, newText);
             request.setAttribute(MSEBP, networkBP.getNetworkErrorSquared());
             request.setAttribute(MSEGA, networkGA.getNetworkErrorSquared());
@@ -73,7 +74,7 @@ public class viewTrainingGraph extends HttpServlet {
             request.setAttribute(MADGA, networkGA.getNetworkError());
             
     }
-     
+     //transfer back the data saved due to system modify double and class variable
      private void dataReconstruction(TrainingData[] data, String[] expectedValue, String[][] featureSet)
      {
            int length = data[0].getData().length;

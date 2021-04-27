@@ -1,7 +1,7 @@
 
 <html>
   <head>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/UI.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/view/style.css">
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
       <!-- Compiled and minified CSS -->

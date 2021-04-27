@@ -11,6 +11,8 @@ import java.util.Random;
 /**
  *
  * @author varut
+ * Class NetworkBP
+ * store all relevant neural network data for backpropagation  
  */
 public class NetworkBP{
 
@@ -187,9 +189,9 @@ public class NetworkBP{
     public void sethActivation(double[][] hActivation) {
         this.hActivation = hActivation;
     }
-    int hiddenNode;
-    int inputNode;
-    int outNode;
+    private int hiddenNode;
+    private int inputNode;
+    private int outNode;
     private int numOfLayer;
     private double[][] hiddenBias;
     private double[] outerBias;

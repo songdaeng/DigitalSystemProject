@@ -176,7 +176,7 @@ public class NetworkGA{
     
     public void setHiddenWeight(double[][][] weights, int layerNum)
     { 
-       for (int i = 0; i < weights.length; i++) {
+       for (int i = 0; i < layerNum - 2; i++) {
             for (int j = 0; j < weights[0].length; j++) {
                 for (int k = 0; k < weights[0][0].length; k++) {
                     hWeights[i][j][k] = weights[i][j][k];

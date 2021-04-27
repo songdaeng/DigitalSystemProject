@@ -358,6 +358,7 @@ public class NeuralNetwork {
         double[][] outWeights = new double[outNode][hiddenNode + 1];
         ArrayList<Double> trainingError = new ArrayList<>();
         ArrayList<Double> validationError = new ArrayList<>();
+
         try  {  
             //setting up the file reader
             File file=new File(path);    
@@ -375,15 +376,15 @@ public class NeuralNetwork {
                 }
                 else if(content.matches("layers"))
                 {
-                    int layer = Integer.parseInt(line);
-                    network = new NetworkGA(inputNode, hiddenNode, outNode, layer);
+                    LAYERNUM = Integer.parseInt(line);
+                    network = new NetworkGA(inputNode, hiddenNode, outNode, LAYERNUM);
                     hiddenWeights = new double[LAYERNUM - 2][inputNode][hiddenNode + 1];
                 }
                 else if(content.matches("Hidden Weights"))
                 {
-                    String[] layer = line.split(";");
-                    for (int i = 0; i < layer.length; i++) {
-                        String[] nodes = layer[i].split(",");
+                    String[] layers = line.split(";");
+                    for (int i = 0; i < layers.length; i++) {
+                        String[] nodes = layers[i].split(",");
                         for (int j = 0; j < nodes.length; j++) {
                             String[] weights = nodes[j].split("\\s+");
                             for (int k = 0; k < weights.length; k++) {                           

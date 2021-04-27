@@ -29,55 +29,60 @@ public class predictionController extends HttpServlet {
 
     private void getPrediction(HttpServletRequest request, HttpServletResponse response)
     {
-            String path = getServletContext().getRealPath("/WEB-INF/classes/model/dataset.txt");
-            String BPWeightsPath = getServletContext().getRealPath("/WEB-INF/classes/model/weights.txt");
-            String GAWeightsPath = getServletContext().getRealPath("/WEB-INF/classes/model/GAANN/weights.txt");
-             TrainingData[] data =    getDataFromFile(path);
-            NetworkBP networkBP = createExistingNeuralNetwork(path, BPWeightsPath);
-            NetworkGA networkGA = model.GAANN.NeuralNetwork.createExistingNeuralNetwork(path, GAWeightsPath);
-            double[] prediction = networkBP.getPrediction();
-            double[] GAPrediction = networkGA.getPrediction();
-            String path2 = getServletContext().getRealPath("/WEB-INF/classes/model/nextMonthData.txt");
-             TrainingData[] data2 =  getDataFromFile(path2);
-             String nextMonthValue = Double.toString(data2[0].getExpectValue());
-             double[] features = data2[0].getData();
-             //requiredd as data get modify for some reason
-            double nextMonthPredictionGA = predictGA(features, data[0], GAWeightsPath);
-            data2 =  getDataFromFile(path2);
-             double[] features2 = data2[0].getData();
-            double nextMonthPredictionBP = predict(features2, data[0], BPWeightsPath);
+        //get paths
+        String path = getServletContext().getRealPath("/WEB-INF/classes/model/dataset.txt");
+        String BPWeightsPath = getServletContext().getRealPath("/WEB-INF/classes/model/weights.txt");
+        String GAWeightsPath = getServletContext().getRealPath("/WEB-INF/classes/model/GAANN/weights.txt");
+        TrainingData[] data =    getDataFromFile(path);
+        NetworkBP networkBP = createExistingNeuralNetwork(path, BPWeightsPath);
+        NetworkGA networkGA = model.GAANN.NeuralNetwork.createExistingNeuralNetwork(path, GAWeightsPath);
+        double[] prediction = networkBP.getPrediction();
+        double[] GAPrediction = networkGA.getPrediction();
+        String path2 = getServletContext().getRealPath("/WEB-INF/classes/model/nextMonthData.txt");
+        TrainingData[] data2 =  getDataFromFile(path2);
+        String nextMonthValue = Double.toString(data2[0].getExpectValue());
+        double[] features = data2[0].getData();
+         //required as data get modify for some reason
+         //regradless any value passed will get modified no matter if clone
+        double nextMonthPredictionGA = predictGA(features, data[0], GAWeightsPath);
+        data2 =  getDataFromFile(path2);
+        double[] features2 = data2[0].getData();
+        double nextMonthPredictionBP = predict(features2, data[0], BPWeightsPath);
+        
+        String newText = "[";
+        String[] date = new String[data.length];
+        String[] expectedValue = new String[data.length];
+        //double to string 
+        for(int i = 0; i < prediction.length; i++)
+        {
+            date[i] = data[i].getDate();
+            expectedValue[i] = Double.toString(data[i].getExpectValue());
+        }
+        //constructing data for graph
+        for(int i = 0; i < prediction.length; i++)
+        {
+            newText += "[ \' " + date[i] + "\' , " + prediction[i] + ", " + GAPrediction[i] + " , " + expectedValue[i]+ " ]";
+            if(i != prediction.length -1)
+            {
 
-            String newText = "[";
-            String[] date = new String[data.length];
-            String[] expectedValue = new String[data.length];
-            for(int i = 0; i < prediction.length; i++)
-            {
-                date[i] = data[i].getDate();
-                expectedValue[i] = Double.toString(data[i].getExpectValue());
+                newText += ", ";
             }
-            for(int i = 0; i < prediction.length; i++)
-            {
-                newText += "[ \' " + date[i] + "\' , " + prediction[i] + ", " + GAPrediction[i] + " , " + expectedValue[i]+ " ]";
-                if(i != prediction.length -1)
+            else{
+                newText += ", ";
+                for(int J = 0; J < 50;J++)
                 {
-                    
-                    newText += ", ";
+                    newText += "[ \' " + data2[0].getDate() + "\' , " + nextMonthPredictionBP + ", " + nextMonthPredictionGA + " , " + nextMonthValue + " ],";
                 }
-                else{
-                    newText += ", ";
-                    for(int J = 0; J < 50;J++)
-                    {
-                        newText += "[ \' " + data2[0].getDate() + "\' , " + nextMonthPredictionBP + ", " + nextMonthPredictionGA + " , " + nextMonthValue + " ],";
-                    }
-                    newText += "[ \' " + data2[0].getDate() + "\' , " + nextMonthPredictionBP + ", " + nextMonthPredictionGA + " , " + nextMonthValue + " ]";
-                    newText += " ]";
-                }
+                newText += "[ \' " + data2[0].getDate() + "\' , " + nextMonthPredictionBP + ", " + nextMonthPredictionGA + " , " + nextMonthValue + " ]";
+                newText += " ]";
             }
-            request.setAttribute("result", newText);
-            request.setAttribute("MSEBP", networkBP.getNetworkErrorSquared());
-            request.setAttribute("MSEGA", networkGA.getNetworkErrorSquared());
-            request.setAttribute("MADBP", networkBP.getNetworkError());
-            request.setAttribute("MADGA", networkGA.getNetworkError());
+        }
+        //setting web paramter
+        request.setAttribute("result", newText);
+        request.setAttribute("MSEBP", networkBP.getNetworkErrorSquared());
+        request.setAttribute("MSEGA", networkGA.getNetworkErrorSquared());
+        request.setAttribute("MADBP", networkBP.getNetworkError());
+        request.setAttribute("MADGA", networkGA.getNetworkError());
             
     }
 

@@ -22,7 +22,7 @@
     </servlet>
     <servlet>
         <servlet-name>trainBPANNContrroller</servlet-name>
-        <servlet-class>controller.trainBPANNContrroller</servlet-class>
+        <servlet-class>controller.trainBPANNController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>viewTrainingGraph</servlet-name>
