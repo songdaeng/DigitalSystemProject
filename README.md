@@ -1,4 +1,4 @@
-# DSPFULL
+# Digital System Project by Varut
 The system is design to generalise the relationship of a dataset with two models of backpropagation and genetic algorithm being available.
 This GitHub contain a Java Web system that demonstrate of the power of backpropagation and genetic algorithm. 
 
