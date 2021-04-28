@@ -126,7 +126,7 @@ public class predictionController extends HttpServlet {
             request.setAttribute("predictionError", "Input field is empty");
         }
         else{
-            String path = "C:/Users/varut/Documents/NetBeansProjects/BPNeuralNetwork/src/java/model/dataset.txt";
+            String path = getServletContext().getRealPath("/WEB-INF/classes/model/dataset.txt");
             String BPWeightsPath = getServletContext().getRealPath("/WEB-INF/classes/model/weights.txt");
             String GAWeightsPath = getServletContext().getRealPath("/WEB-INF/classes/model/GAANN/weights.txt");
             TrainingData[] data =    getDataFromFile(path);
