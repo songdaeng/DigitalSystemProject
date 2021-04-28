@@ -233,7 +233,8 @@ public class geneticAL {
     public static Individual GeneticAI(int numOfGene, TrainingData[] data, TrainingData[] validationData, double desiredMinError, NetworkGA network
     , double mutation, double crossoverRate, int generationWithoutImprovement)
     {
-        
+        //GA is slower gradient descent so it need a grace period 
+        int gracePeriod = 0;
         geneNum = numOfGene;
         mutationRate =  mutation * 1000;
         double fitness = 10000; 
@@ -297,13 +298,14 @@ public class geneticAL {
                 double[] weighting = bestOffSpring.getGene();
                 NeuralNetwork.genesToWeights(network, weighting);
                 NeuralNetwork.forward(validationData, network);
-                double vError = network.getNetworkError();
+                double vError = network.getNetworkErrorSquared();
                 validationError.add(vError);
  
                 //breakout if validation more error than traininng butt not first epoch
-                if(vError > fitness && epoch != 0){
+                if(vError > fitness && epoch != 0 && gracePeriod > 5){
                     fitness = 0;
                 }
+                gracePeriod++;
                 epoch = 1;
             }
             epoch++;
@@ -312,7 +314,7 @@ public class geneticAL {
         }
         trainingError.add(LowestError);
         NeuralNetwork.forward(validationData, network);
-        double vError = network.getNetworkError();
+        double vError = network.getNetworkErrorSquared();
         validationError.add(vError);
         network.setTrainingError(trainingError);
         network.setValidationError(validationError);
