@@ -13,7 +13,7 @@
             </div>            
                 <div class="social-area">
                        <a href="https://www.linkedin.com/in/varut-songdaeng-a687b6172" target="_blank" class="fa fa-linkedin fa-5x"></a>
-                       <a href="https://github.com/songdaeng/DSP" class="fa fa-github fa-5x"></a>
+                       <a href="https://github.com/songdaeng/DigitalSystemProject" class="fa fa-github fa-5x"></a>
                 </div>
         </li>
             <li><a class="waves-effect waves-light btn-large wide" href="${pageContext.request.contextPath}/">HomePage</a></li>
