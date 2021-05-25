@@ -26,6 +26,7 @@ public class viewTrainingErrorController extends HttpServlet {
 
       private void getError(HttpServletRequest request, HttpServletResponse response)
     {
+        try{
             String path = getServletContext().getRealPath("/WEB-INF/classes/model/dataset.txt");
             String BPWeightsPath = getServletContext().getRealPath("/WEB-INF/classes/model/weights.txt");
             String GAWeightsPath = getServletContext().getRealPath("/WEB-INF/classes/model/GAANN/weights.txt");
@@ -66,6 +67,11 @@ public class viewTrainingErrorController extends HttpServlet {
             request.setAttribute("GAFinalValidationError", GAFinalValidationError);
             request.setAttribute("BPFinalTrainingError", BPFinalTrainingError);
             request.setAttribute("BPFinalValidationError", BPFinalValidationError);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
             
     }
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

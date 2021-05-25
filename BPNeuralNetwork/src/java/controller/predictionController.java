@@ -30,60 +30,65 @@ public class predictionController extends HttpServlet {
     private void getPrediction(HttpServletRequest request, HttpServletResponse response)
     {
         //get paths
-        String path = getServletContext().getRealPath("/WEB-INF/classes/model/dataset.txt");
-        String BPWeightsPath = getServletContext().getRealPath("/WEB-INF/classes/model/weights.txt");
-        String GAWeightsPath = getServletContext().getRealPath("/WEB-INF/classes/model/GAANN/weights.txt");
-        TrainingData[] data =    getDataFromFile(path);
-        NetworkBP networkBP = createExistingNeuralNetwork(path, BPWeightsPath);
-        NetworkGA networkGA = model.GAANN.NeuralNetwork.createExistingNeuralNetwork(path, GAWeightsPath);
-        double[] prediction = networkBP.getPrediction();
-        double[] GAPrediction = networkGA.getPrediction();
-        String path2 = getServletContext().getRealPath("/WEB-INF/classes/model/nextMonthData.txt");
-        TrainingData[] data2 =  getDataFromFile(path2);
-        String nextMonthValue = Double.toString(data2[0].getExpectValue());
-        double[] features = data2[0].getData();
-         //required as data get modify for some reason
-         //regradless any value passed will get modified no matter if clone
-        double nextMonthPredictionGA = predictGA(features, data[0], GAWeightsPath);
-        data2 =  getDataFromFile(path2);
-        double[] features2 = data2[0].getData();
-        double nextMonthPredictionBP = predict(features2, data[0], BPWeightsPath);
-        
-        String newText = "[";
-        String[] date = new String[data.length];
-        String[] expectedValue = new String[data.length];
-        //double to string 
-        for(int i = 0; i < prediction.length; i++)
-        {
-            date[i] = data[i].getDate();
-            expectedValue[i] = Double.toString(data[i].getExpectValue());
-        }
-        //constructing data for graph
-        for(int i = 0; i < prediction.length; i++)
-        {
-            newText += "[ \' " + date[i] + "\' , " + prediction[i] + ", " + GAPrediction[i] + " , " + expectedValue[i]+ " ]";
-            if(i != prediction.length -1)
-            {
+        try{
+            String path = getServletContext().getRealPath("/WEB-INF/classes/model/dataset.txt");
+            String BPWeightsPath = getServletContext().getRealPath("/WEB-INF/classes/model/weights.txt");
+            String GAWeightsPath = getServletContext().getRealPath("/WEB-INF/classes/model/GAANN/weights.txt");
+            TrainingData[] data =    getDataFromFile(path);
+            NetworkBP networkBP = createExistingNeuralNetwork(path, BPWeightsPath);
+            NetworkGA networkGA = model.GAANN.NeuralNetwork.createExistingNeuralNetwork(path, GAWeightsPath);
+            double[] prediction = networkBP.getPrediction();
+            double[] GAPrediction = networkGA.getPrediction();
+            String path2 = getServletContext().getRealPath("/WEB-INF/classes/model/nextMonthData.txt");
+            TrainingData[] data2 =  getDataFromFile(path2);
+            String nextMonthValue = Double.toString(data2[0].getExpectValue());
+            double[] features = data2[0].getData();
+             //required as data get modify for some reason
+             //regradless any value passed will get modified no matter if clone
+            double nextMonthPredictionGA = predictGA(features, data[0], GAWeightsPath);
+            data2 =  getDataFromFile(path2);
+            double[] features2 = data2[0].getData();
+            double nextMonthPredictionBP = predict(features2, data[0], BPWeightsPath);
 
-                newText += ", ";
+            String newText = "[";
+            String[] date = new String[data.length];
+            String[] expectedValue = new String[data.length];
+            //double to string 
+            for(int i = 0; i < prediction.length; i++)
+            {
+                date[i] = data[i].getDate();
+                expectedValue[i] = Double.toString(data[i].getExpectValue());
             }
-            else{
-                newText += ", ";
-                for(int J = 0; J < 50;J++)
+            //constructing data for graph
+            for(int i = 0; i < prediction.length; i++)
+            {
+                newText += "[ \' " + date[i] + "\' , " + prediction[i] + ", " + GAPrediction[i] + " , " + expectedValue[i]+ " ]";
+                if(i != prediction.length -1)
                 {
-                    newText += "[ \' " + data2[0].getDate() + "\' , " + nextMonthPredictionBP + ", " + nextMonthPredictionGA + " , " + nextMonthValue + " ],";
+
+                    newText += ", ";
                 }
-                newText += "[ \' " + data2[0].getDate() + "\' , " + nextMonthPredictionBP + ", " + nextMonthPredictionGA + " , " + nextMonthValue + " ]";
-                newText += " ]";
+                else{
+                    newText += ", ";
+                    for(int J = 0; J < 50;J++)
+                    {
+                        newText += "[ \' " + data2[0].getDate() + "\' , " + nextMonthPredictionBP + ", " + nextMonthPredictionGA + " , " + nextMonthValue + " ],";
+                    }
+                    newText += "[ \' " + data2[0].getDate() + "\' , " + nextMonthPredictionBP + ", " + nextMonthPredictionGA + " , " + nextMonthValue + " ]";
+                    newText += " ]";
+                }
             }
+            //setting web paramter
+            request.setAttribute("result", newText);
+            request.setAttribute("MSEBP", networkBP.getNetworkErrorSquared());
+            request.setAttribute("MSEGA", networkGA.getNetworkErrorSquared());
+            request.setAttribute("MADBP", networkBP.getNetworkError());
+            request.setAttribute("MADGA", networkGA.getNetworkError());
         }
-        //setting web paramter
-        request.setAttribute("result", newText);
-        request.setAttribute("MSEBP", networkBP.getNetworkErrorSquared());
-        request.setAttribute("MSEGA", networkGA.getNetworkErrorSquared());
-        request.setAttribute("MADBP", networkBP.getNetworkError());
-        request.setAttribute("MADGA", networkGA.getNetworkError());
-            
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -120,43 +125,48 @@ public class predictionController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String marketData = request.getParameter("marketData");
-        if(marketData.isEmpty() || marketData == null)
-        {       
-            request.setAttribute("predictionError", "Input field is empty");
-        }
-        else{
-            String path = getServletContext().getRealPath("/WEB-INF/classes/model/dataset.txt");
-            String BPWeightsPath = getServletContext().getRealPath("/WEB-INF/classes/model/weights.txt");
-            String GAWeightsPath = getServletContext().getRealPath("/WEB-INF/classes/model/GAANN/weights.txt");
-            TrainingData[] data =    getDataFromFile(path);
-            int featureSet = data[0].getData().length;
-            String[] newData = marketData.split(",");
-            if(featureSet == newData.length)
-            {
-                double[] doubleValues = Arrays.stream(newData)
-                        .mapToDouble(Double::parseDouble)
-                        .toArray();
-                double predictionBP = predict(doubleValues, data[0],BPWeightsPath );
-                //data gets messed up by javaEE as it clone memory. 
-                double[] newFeatureSet = Arrays.stream(newData)
-                        .mapToDouble(Double::parseDouble)
-                        .toArray();
-                double predictionGA = predictGA(newFeatureSet,data[0], GAWeightsPath);
-                request.setAttribute("BPPrediction", predictionBP);
-                request.setAttribute("GAPrediction", predictionGA);
-
+        try{
+            String marketData = request.getParameter("marketData");
+            if(marketData.isEmpty() || marketData == null)
+            {       
+                request.setAttribute("predictionError", "Input field is empty");
             }
             else{
-                request.setAttribute("predictionError", "featureset Mismatch");
+                String path = getServletContext().getRealPath("/WEB-INF/classes/model/dataset.txt");
+                String BPWeightsPath = getServletContext().getRealPath("/WEB-INF/classes/model/weights.txt");
+                String GAWeightsPath = getServletContext().getRealPath("/WEB-INF/classes/model/GAANN/weights.txt");
+                TrainingData[] data =    getDataFromFile(path);
+                int featureSet = data[0].getData().length;
+                String[] newData = marketData.split(",");
+                if(featureSet == newData.length)
+                {
+                    double[] doubleValues = Arrays.stream(newData)
+                            .mapToDouble(Double::parseDouble)
+                            .toArray();
+                    double predictionBP = predict(doubleValues, data[0],BPWeightsPath );
+                    //data gets messed up by javaEE as it clone memory. 
+                    double[] newFeatureSet = Arrays.stream(newData)
+                            .mapToDouble(Double::parseDouble)
+                            .toArray();
+                    double predictionGA = predictGA(newFeatureSet,data[0], GAWeightsPath);
+                    request.setAttribute("BPPrediction", predictionBP);
+                    request.setAttribute("GAPrediction", predictionGA);
+
+                }
+                else{
+                    request.setAttribute("predictionError", "featureset Mismatch");
+                }
+
+                getPrediction(request, response);
+
+                }
             }
-            
-            getPrediction(request, response);
-            //request.setAttribute("test", test);r
-            
+            catch(Exception e){
+                e.printStackTrace();
+            }
             RequestDispatcher dispatcher = request.getRequestDispatcher("/view/prediction.jsp");
             dispatcher.forward(request,response);
-        }
+        
     }
     
     

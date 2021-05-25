@@ -29,6 +29,7 @@ public class viewTrainingGraph extends HttpServlet {
      private void getPrediction(HttpServletRequest request, HttpServletResponse response,
              TrainingData[] data, String graphName, String MSEBP, String MSEGA, String MADBP, String MADGA)
     {
+        try{
             String BPWeightsPath = getServletContext().getRealPath("/WEB-INF/classes/model/weights.txt");
             String GAWeightsPath = getServletContext().getRealPath("/WEB-INF/classes/model/GAANN/weights.txt");
             ArrayList<String> date = new ArrayList<>();
@@ -72,6 +73,11 @@ public class viewTrainingGraph extends HttpServlet {
             request.setAttribute(MSEGA, networkGA.getNetworkErrorSquared());
             request.setAttribute(MADBP, networkBP.getNetworkError());
             request.setAttribute(MADGA, networkGA.getNetworkError());
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
             
     }
      //transfer back the data saved due to system modify double and class variable
@@ -101,31 +107,37 @@ public class viewTrainingGraph extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        double trainingRatio = 0.7;
-        String path = getServletContext().getRealPath("/WEB-INF/classes/model/dataset.txt");
-        TrainingData[] data =    getDataFromFile(path);
-        double[] min = data[0].getMin();
-        double[] max = data[0].getMax();
-        int validationLength = (int) ((data.length * trainingRatio) * 0.1);
-        int trainingLength = (int) ((data.length * trainingRatio) - validationLength);
-        int testingLength = data.length - (trainingLength + validationLength);
+        try{
+            double trainingRatio = 0.7;
+            String path = getServletContext().getRealPath("/WEB-INF/classes/model/dataset.txt");
+            TrainingData[] data =    getDataFromFile(path);
+            double[] min = data[0].getMin();
+            double[] max = data[0].getMax();
+            int validationLength = (int) ((data.length * trainingRatio) * 0.1);
+            int trainingLength = (int) ((data.length * trainingRatio) - validationLength);
+            int testingLength = data.length - (trainingLength + validationLength);
 
-        TrainingData[] trainingData = new TrainingData[trainingLength];
-        TrainingData[] validationData = new TrainingData[validationLength]; 
-        TrainingData[] testingData = new TrainingData[testingLength];
+            TrainingData[] trainingData = new TrainingData[trainingLength];
+            TrainingData[] validationData = new TrainingData[validationLength]; 
+            TrainingData[] testingData = new TrainingData[testingLength];
 
-        
-        dataSplitting(data, trainingData, testingData, validationData, trainingRatio);
- 
-        trainingData[0].setMax(max);
-        trainingData[0].setMin(min);
-        testingData[0].setMax(max);
-        testingData[0].setMin(min);
-        validationData[0].setMax(max);
-        validationData[0].setMin(min);
-        getPrediction( request,  response, trainingData, "trainingGraph", "trainingMSEBP", "trainingMSEGA", "trainingMADBP", "trainingMADGA");
-        getPrediction( request,  response, validationData, "validationGraph", "validationMSEBP", "validationMSEGA", "validationMADBP", "validationMADGA");
-        getPrediction( request,  response, testingData, "testingGraph", "testingMSEBP", "testingMSEGA", "testingMADBP", "testingMADGA");
+
+            dataSplitting(data, trainingData, testingData, validationData, trainingRatio);
+
+            trainingData[0].setMax(max);
+            trainingData[0].setMin(min);
+            testingData[0].setMax(max);
+            testingData[0].setMin(min);
+            validationData[0].setMax(max);
+            validationData[0].setMin(min);
+            getPrediction( request,  response, trainingData, "trainingGraph", "trainingMSEBP", "trainingMSEGA", "trainingMADBP", "trainingMADGA");
+            getPrediction( request,  response, validationData, "validationGraph", "validationMSEBP", "validationMSEGA", "validationMADBP", "validationMADGA");
+            getPrediction( request,  response, testingData, "testingGraph", "testingMSEBP", "testingMSEGA", "testingMADBP", "testingMADGA");
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
         RequestDispatcher dispatcher = request.getRequestDispatcher("/view/viewTrainingGraph.jsp");
         dispatcher.forward(request,response);
     }
